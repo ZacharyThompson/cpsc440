@@ -1,83 +1,105 @@
 # Zachary Thompson
+# Assignment 8
 # input.asm
 
 .data
 
-welcome_msg: .asciiz "Welcome to Slope of Line Calculator\nEnter 2 points:\n"
-x1_msg: .asciiz "Enter x1: "
-y1_msg: .asciiz "Enter y1: "
-x2_msg: .asciiz "Enter x2: "
-y2_msg: .asciiz "Enter y2: "
+msg_1: .asciiz "Enter Number 1: "
+msg_2: .asciiz "Enter Number 2: "
+msg_3: .asciiz "Enter an operation (+,-,*,/,%): "
 
-end_msg: .asciiz "The slope of this line is: "
+plus: .asciiz "+"
+minus: .asciiz "-"
+multiply: .asciiz "*"
+divide: .asciiz "/"
+equals: .asciiz "="
+
+operation: .byte 0
 answer: .double 0.0
 
 .text
 .globl main
 main:
-	# Print welcome_message
-	li $v0, 4
-	la $a0, welcome_msg
-	syscall
 
-	# Print x1_msg
+	# Print msg_1
 	li $v0, 4
-	la $a0, x1_msg
+	la $a0, msg_1
 	syscall
-	# Read x1 from user input
+	# Read Number 1
 	li $v0, 7
 	syscall
 	mov.d $f2, $f0
 
-	# Print y1_msg
+	# Print msg_2
 	li $v0, 4
-	la $a0, y1_msg
+	la $a0, msg_2
 	syscall
-	# Read y1 from user input
+	# Read Number 2
 	li $v0, 7
 	syscall
 	mov.d $f4, $f0
-	
-	# Print x2_msg
+
+	# Print msg_3
 	li $v0, 4
-	la $a0, x2_msg
+	la $a0, msg_3
 	syscall
-	# Read x2 from user input
-	li $v0, 7
+	# Read operation character
+	li $v0, 12
 	syscall
-	mov.d $f6, $f0
+	move $s1, $v0
 
-	# Print y2_msg
-	li $v0, 4
-	la $a0, y2_msg
-	syscall
-	# Read y2 from user input
-	li $v0, 7
-	syscall
-	mov.d $f8, $f0
+	# Determine which operation to do
+	lb $s0, plus
+	beq $s0, $s1, add_op
+	lb $s0, minus
+	beq $s0, $s1, sub_op
+	lb $s0, multiply
+	beq $s0, $s1, mul_op
+	lb $s0, divide
+	beq $s0, $s1, div_op
 
-	# y2 - y1
-	sub.d $f10, $f8, $f4
-	# x2 - x1
-	sub.d $f12, $f6, $f2
-	# (y2-y1) / (x2-x1)
-	div.d $f14, $f10, $f12
+	# If it equals none, then exit
+	j exit
 
-    # Store slope in memory
-	s.d $f14, answer
+add_op:
+	add.d $f6, $f2, $f4
+sub_op:
+	sub.d $f6, $f2, $f4
+mul_op:
+	mul.d $f6, $f2, $f4
+div_op:
+	div.d $f6, $f2, $f4
 
-	# Print end_msg
-	li $v0, 4
-	la $a0, end_msg
-	syscall
-
-    # Print the slope
+	# Print Number 1
+	mov.d $f12, $f2
 	li $v0, 3
-	l.d $f12, answer
 	syscall
 
+	# Print Operation
+	sb $s1, operation
+	la $a0, operation
+	li $v0, 11
+	syscall
+
+	# Print Number 2
+	mov.d $f12, $f4
+	li $v0, 3
+	syscall
+
+	# Print =
+	la $a0, equals
+	li $v0, 11
+	syscall
+
+	# Print Answer
+	mov.d $f12, $f6
+	li $v0, 3
+	syscall
+
+exit:
 	# Exit Program Syscall
 	li $v0, 10
 	syscall
 .end
+
 
