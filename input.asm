@@ -6,7 +6,7 @@
 
 msg_1: .asciiz "Enter Number 1: "
 msg_2: .asciiz "Enter Number 2: "
-msg_3: .asciiz "Enter an operation (+,-,*,/,%): "
+msg_3: .asciiz "Enter an operation (+,-,*,/): "
 
 plus: .asciiz "+"
 minus: .asciiz "-"
@@ -14,8 +14,7 @@ multiply: .asciiz "*"
 divide: .asciiz "/"
 equals: .asciiz "="
 
-operation: .byte 0
-answer: .double 0.0
+newline: .asciiz "\n"
 
 .text
 .globl main
@@ -49,7 +48,8 @@ main:
 	move $s1, $v0
 
 	# Determine which operation to do
-	lb $s0, plus
+	la $t0, plus
+	lb $s0, 0($t0)
 	beq $s0, $s1, add_op
 	lb $s0, minus
 	beq $s0, $s1, sub_op
@@ -63,12 +63,22 @@ main:
 
 add_op:
 	add.d $f6, $f2, $f4
+	j print_answer
 sub_op:
 	sub.d $f6, $f2, $f4
+	j print_answer
 mul_op:
 	mul.d $f6, $f2, $f4
+	j print_answer
 div_op:
 	div.d $f6, $f2, $f4
+	j print_answer
+
+print_answer:
+	# Print newline
+	li $v0, 4
+	la $a0, newline
+	syscall
 
 	# Print Number 1
 	mov.d $f12, $f2
@@ -76,9 +86,8 @@ div_op:
 	syscall
 
 	# Print Operation
-	sb $s1, operation
-	la $a0, operation
 	li $v0, 11
+	move $a0, $s1
 	syscall
 
 	# Print Number 2
@@ -87,7 +96,7 @@ div_op:
 	syscall
 
 	# Print =
-	la $a0, equals
+	la $a0, 0x3D
 	li $v0, 11
 	syscall
 
