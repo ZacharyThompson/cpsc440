@@ -19,24 +19,23 @@ newline: .asciiz "\n"
 .text
 .globl main
 main:
-
 	# Print msg_1
 	li $v0, 4
 	la $a0, msg_1
 	syscall
 	# Read Number 1
-	li $v0, 7
+	li $v0, 5
 	syscall
-	mov.d $f2, $f0
+	move $s4, $v0
 
 	# Print msg_2
 	li $v0, 4
 	la $a0, msg_2
 	syscall
 	# Read Number 2
-	li $v0, 7
+	li $v0, 5
 	syscall
-	mov.d $f4, $f0
+	move $s5, $v0
 
 	# Print msg_3
 	li $v0, 4
@@ -62,16 +61,16 @@ main:
 	j exit
 
 add_op:
-	add.d $f6, $f2, $f4
+	add $s6, $s4, $s5
 	j print_answer
 sub_op:
-	sub.d $f6, $f2, $f4
+	sub $s6, $s4, $s5
 	j print_answer
 mul_op:
-	mul.d $f6, $f2, $f4
+	mul $s6, $s4, $s5
 	j print_answer
 div_op:
-	div.d $f6, $f2, $f4
+	div $s6, $s4, $s5
 	j print_answer
 
 print_answer:
@@ -81,8 +80,8 @@ print_answer:
 	syscall
 
 	# Print Number 1
-	mov.d $f12, $f2
-	li $v0, 3
+	move $a0, $s4
+	li $v0, 1
 	syscall
 
 	# Print Operation
@@ -91,8 +90,8 @@ print_answer:
 	syscall
 
 	# Print Number 2
-	mov.d $f12, $f4
-	li $v0, 3
+	move $a0, $s5
+	li $v0, 1
 	syscall
 
 	# Print =
@@ -101,8 +100,8 @@ print_answer:
 	syscall
 
 	# Print Answer
-	mov.d $f12, $f6
-	li $v0, 3
+	move $a0, $s6
+	li $v0, 1
 	syscall
 
 exit:
@@ -110,5 +109,3 @@ exit:
 	li $v0, 10
 	syscall
 .end
-
-
