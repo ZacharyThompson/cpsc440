@@ -4,10 +4,11 @@
 
 .data
 
-msg_1:		.ascii "Welcome to one digit integer calculator.\n"
+msg_1:		.ascii "Welcome to one-digit integer calculator.\n"
 			.ascii "This calculator does not follow PEMDAS order of operations.\n"
 			.ascii "The valid operations are : +,-,*,/\n"
-			.asciiz "Enter an expression such as \"5/3+4-7*8\": "
+			.ascii "Example expression: \"5/3+4-7*8\"\n"
+			.asciiz "Enter an expression: "
 
 msg_2: 		.asciiz "\nThe answer is: "
 
@@ -100,6 +101,8 @@ end_loop:
 	lw $a0, answer
 	li $v0, 1
 	syscall
+
+	j exit
 
 exit:
 	# Exit Program Syscall
